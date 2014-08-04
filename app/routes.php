@@ -78,15 +78,11 @@ Route::post('/', function()
 
 	$jsonToSave = json_encode($postObject);	
 
-	$users = User::where('node_id', '=', $id)->get();
+	$user = User::where('node_id', $id)->first();
 	
-	$user = null;
-
-	if($users->isEmpty()){
+	if(!$user) {
 		$user = new User;
 		$user->node_id = $id;
-	} else {
-		$user = $users->first();
 	}
 
 	if ($user->node_string !== $jsonToSave) {
@@ -95,6 +91,7 @@ Route::post('/', function()
 	else {
 		$user->touch();
 	}
+	
 	$user->save();
 
 	return Response::make('', 202);
